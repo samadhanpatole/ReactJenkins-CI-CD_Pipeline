@@ -1,33 +1,30 @@
 pipeline {
     agent any
- 
-    tools {
-        nodejs "NodeJs"
-    }
- 
+
     stages {
- 
+
         stage("Install Dependencies") {
             steps {
                 bat "npm install"
             }
         }
- 
+
         stage("Test") {
             steps {
-                echo "Testing the application"
+                bat "npm test -- --watchAll=false"
             }
         }
- 
+
         stage("Build") {
             steps {
                 bat "npm run build"
             }
         }
- 
+
         stage("Deployment") {
             steps {
-                bat "del /q /s C:\\inetpub\\wwwroot\\reactapp\\*"
+                bat "if exist C:\\inetpub\\wwwroot\\reactapp rmdir /s /q C:\\inetpub\\wwwroot\\reactapp"
+                bat "mkdir C:\\inetpub\\wwwroot\\reactapp"
                 bat "xcopy /E /Y /I build\\* C:\\inetpub\\wwwroot\\reactapp\\"
             }
         }
